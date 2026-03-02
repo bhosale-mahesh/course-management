@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: course-management
+  datasource:
+    url: "jdbc:postgresql://localhost:5432/course-mgmt-db"
+    driver-class-name: org.postgresql.Driver
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
