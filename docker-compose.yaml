@@ -1,0 +1,11 @@
+services:
+  postgres-db:
+    container_name: course-mgmt-postgres
+    image: postgres:alpine
+    restart: unless-stopped
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: course-mgmt-db
