@@ -2,6 +2,8 @@ package com.mb.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -14,6 +16,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -24,25 +28,29 @@ import java.util.Set;
 public class Course {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @Column(name = "name")
-    private String name;
-
-    @Column(name = "duration_hrs")
-    private double durationInHrs;
-
-    @Column(name = "is_active")
-    private boolean isActive;
+    @Column(name = "title", nullable = false)
+    private String title;
 
     @Column(name = "description")
     private String description;
 
-    @ManyToMany(mappedBy = "courses")
-    private Set<Student> students;
+    @Column(name = "price", nullable = false)
+    private BigDecimal price;
 
-    @ManyToOne
-    @JoinColumn(name = "instructor_id")
+    @Column(name = "is_active")
+    private boolean isActive = true;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "instructor_id",
+            foreignKey = @ForeignKey(name = "fk_course_instructor"),
+            nullable = false
+    )
     private Instructor instructor;
+
+    @ManyToMany(mappedBy = "courses")
+    private Set<Student> students = new HashSet<>();
 }

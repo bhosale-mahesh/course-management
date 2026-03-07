@@ -22,11 +22,14 @@ import java.util.List;
 public class Instructor {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
+
+    @Column(name = "email", unique = true)
+    private String email;
 
     @OneToMany(mappedBy = "instructor")
     private List<Course> courses;
