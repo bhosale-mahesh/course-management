@@ -18,3 +18,7 @@ VALUES (1, 'Harry Potter', 'harry@hogwarts.edu.in'),
        (3, 'Ron Weasley', 'ron@hogwarts.edu.in'),
        (4, 'Neville Longbottom', 'neville@hogwarts.edu.in'),
        (5, 'Draco Malfoy', 'draco@hogwarts.edu.in');
+
+SELECT setval('instructor_id_seq', (SELECT MAX(id) FROM instructor));
+SELECT setval('course_id_seq', (SELECT MAX(id) FROM course));
+SELECT setval('student_id_seq', (SELECT MAX(id) FROM student));

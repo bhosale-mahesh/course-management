@@ -1,6 +1,8 @@
 spring:
   application:
     name: course-management
+  profiles:
+    active: dev
   datasource:
     url: "jdbc:postgresql://localhost:5432/course-mgmt-db"
     driver-class-name: org.postgresql.Driver
@@ -18,3 +20,4 @@ spring:
   sql:
     init:
       mode: always
+      data-locations: optional:classpath*:data-postgresql.sql
