@@ -1,6 +1,8 @@
 spring:
   application:
     name: course-management
+  profiles:
+    active: test
   datasource:
     url: jdbc:h2:mem:course-mgmt-db;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH
     driver-class-name: org.h2.Driver
@@ -15,4 +17,3 @@ spring:
     properties:
       hibernate:
         format_sql: true
-        dialect: org.hibernate.dialect.H2Dialect

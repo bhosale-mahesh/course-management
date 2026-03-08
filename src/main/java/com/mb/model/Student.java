@@ -11,6 +11,8 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,7 +25,9 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Table(name = "student")
 public class Student {
 
@@ -43,5 +47,6 @@ public class Student {
             joinColumns = @JoinColumn(name = "student_id", foreignKey = @ForeignKey(name = "fk_student_course")),
             inverseJoinColumns = @JoinColumn(name = "course_id", foreignKey = @ForeignKey(name = "fk_course_student"))
     )
+    @Builder.Default
     private Set<Course> courses = new HashSet<>();
 }

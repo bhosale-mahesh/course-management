@@ -1,18 +1,24 @@
 package com.mb.controller;
 
+import com.mb.dto.request.StudentRequest;
 import com.mb.dto.response.PaginatedResponse;
 import com.mb.dto.response.StudentResponse;
 import com.mb.service.StudentService;
 import com.mb.util.PaginationUtil;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/students")
+@RequestMapping("/v1/api/students")
 @RequiredArgsConstructor
 public class StudentController {
 
@@ -22,5 +28,11 @@ public class StudentController {
     public PaginatedResponse<StudentResponse> getAllStudents(@RequestParam(defaultValue = "0") int page,
                                                              @RequestParam(defaultValue = PaginationUtil.DEFAULT_PAGE_SIZE) int size) {
         return PaginationUtil.buildPaginatedResponse(studentService.getAllStudents(PageRequest.of(page, size)));
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public StudentResponse saveStudent(@Valid @RequestBody StudentRequest request) {
+        return studentService.saveStudent(request);
     }
 }
