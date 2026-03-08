@@ -4,9 +4,10 @@ import com.mb.dto.response.StudentResponse;
 import com.mb.model.Student;
 import com.mb.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -14,8 +15,9 @@ public class StudentService {
 
     private final StudentRepository studentRepository;
 
-    public List<StudentResponse> getAllStudents() {
-        return studentRepository.findAll().stream().map(this::toStudentResponse).toList();
+    @Transactional(readOnly = true)
+    public Page<StudentResponse> getAllStudents(Pageable pageable) {
+        return studentRepository.findAll(pageable).map(this::toStudentResponse);
     }
 
     private StudentResponse toStudentResponse(Student student) {
