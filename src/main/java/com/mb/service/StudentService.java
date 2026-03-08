@@ -4,7 +4,6 @@ import com.mb.dto.request.StudentRequest;
 import com.mb.dto.response.StudentResponse;
 import com.mb.model.Student;
 import com.mb.repository.StudentRepository;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,7 +22,7 @@ public class StudentService {
     }
 
     @Transactional
-    public StudentResponse saveStudent(@Valid StudentRequest request) {
+    public StudentResponse saveStudent(StudentRequest request) {
         if (studentRepository.existsByEmail(request.email())) {
             throw new RuntimeException("Email: " + request.email() + " already exist");
         }
@@ -31,8 +30,8 @@ public class StudentService {
                 .name(request.name())
                 .email(request.email())
                 .build();
-        Student studentFromDb = studentRepository.save(newStudent);
-        return toStudentResponse(studentFromDb);
+        Student savedStudent = studentRepository.save(newStudent);
+        return toStudentResponse(savedStudent);
     }
 
     private StudentResponse toStudentResponse(Student student) {
@@ -41,5 +40,15 @@ public class StudentService {
                 .name(student.getName())
                 .email(student.getEmail())
                 .build();
+    }
+
+    public StudentResponse updateStudent(Long id, StudentRequest request) {
+        Student studentToUpdate = studentRepository.findById(id).orElseThrow(
+                () -> new RuntimeException("Student with id " + id + " not found")
+        );
+        studentToUpdate.setName(request.name());
+        studentToUpdate.setEmail(request.email());
+        Student savedStudent = studentRepository.save(studentToUpdate);
+        return toStudentResponse(savedStudent);
     }
 }
