@@ -1,4 +1,4 @@
-package com.mb.dto;
+package com.mb.dto.request;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotEmpty;
