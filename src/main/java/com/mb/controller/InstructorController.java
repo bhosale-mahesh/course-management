@@ -8,6 +8,7 @@ import com.mb.util.PaginationUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,8 +29,8 @@ public class InstructorController {
 
     @GetMapping
     public PaginatedResponse<InstructorResponse> getAllInstructors(@RequestParam(defaultValue = "0") int page,
-                                                             @RequestParam(defaultValue = PaginationUtil.DEFAULT_PAGE_SIZE) int size) {
-        return PaginationUtil.buildPaginatedResponse(instructorService.getAllInstructors(PageRequest.of(page, size)));
+                                                                   @RequestParam(defaultValue = PaginationUtil.DEFAULT_PAGE_SIZE) int size) {
+        return PaginationUtil.buildPaginatedResponse(instructorService.getAllInstructors(PageRequest.of(page, size, Sort.by("id"))));
     }
 
     @PostMapping
@@ -50,8 +51,8 @@ public class InstructorController {
 
     @GetMapping("/find")
     public PaginatedResponse<InstructorResponse> getInstructorsByName(@RequestParam("name") String name,
-                                                                @RequestParam(defaultValue = "0") int page,
-                                                                @RequestParam(defaultValue = PaginationUtil.DEFAULT_PAGE_SIZE) int size) {
-        return PaginationUtil.buildPaginatedResponse(instructorService.getInstructorsByName(name, PageRequest.of(page, size)));
+                                                                      @RequestParam(defaultValue = "0") int page,
+                                                                      @RequestParam(defaultValue = PaginationUtil.DEFAULT_PAGE_SIZE) int size) {
+        return PaginationUtil.buildPaginatedResponse(instructorService.getInstructorsByName(name, PageRequest.of(page, size, Sort.by("id"))));
     }
 }

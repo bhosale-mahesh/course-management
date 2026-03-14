@@ -8,6 +8,7 @@ import com.mb.util.PaginationUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,7 +30,7 @@ public class StudentController {
     @GetMapping
     public PaginatedResponse<StudentResponse> getAllStudents(@RequestParam(defaultValue = "0") int page,
                                                              @RequestParam(defaultValue = PaginationUtil.DEFAULT_PAGE_SIZE) int size) {
-        return PaginationUtil.buildPaginatedResponse(studentService.getAllStudents(PageRequest.of(page, size)));
+        return PaginationUtil.buildPaginatedResponse(studentService.getAllStudents(PageRequest.of(page, size, Sort.by("id"))));
     }
 
     @PostMapping
@@ -52,6 +53,6 @@ public class StudentController {
     public PaginatedResponse<StudentResponse> getStudentsByName(@RequestParam("name") String name,
                                                                 @RequestParam(defaultValue = "0") int page,
                                                                 @RequestParam(defaultValue = PaginationUtil.DEFAULT_PAGE_SIZE) int size) {
-        return PaginationUtil.buildPaginatedResponse(studentService.getStudentsByName(name, PageRequest.of(page, size)));
+        return PaginationUtil.buildPaginatedResponse(studentService.getStudentsByName(name, PageRequest.of(page, size, Sort.by("id"))));
     }
 }
