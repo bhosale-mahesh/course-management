@@ -10,8 +10,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class StudentService {
@@ -52,6 +50,11 @@ public class StudentService {
         Student student = studentRepository.findById(id).orElseThrow(
                 () -> new RuntimeException("Student not found with id " + id));
         return toStudentResponse(student);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<StudentResponse> getStudentsByName(String name, Pageable pageable) {
+        return studentRepository.findByNameContainingIgnoreCase(name, pageable).map(this::toStudentResponse);
     }
 
     private StudentResponse toStudentResponse(Student student) {
