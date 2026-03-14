@@ -47,4 +47,11 @@ public class StudentController {
     public StudentResponse getStudentById(@PathVariable("id") Long id) {
         return studentService.getStudentById(id);
     }
+
+    @GetMapping("/find")
+    public PaginatedResponse<StudentResponse> getStudentsByName(@RequestParam("name") String name,
+                                                                @RequestParam(defaultValue = "0") int page,
+                                                                @RequestParam(defaultValue = PaginationUtil.DEFAULT_PAGE_SIZE) int size) {
+        return PaginationUtil.buildPaginatedResponse(studentService.getStudentsByName(name, PageRequest.of(page, size)));
+    }
 }
