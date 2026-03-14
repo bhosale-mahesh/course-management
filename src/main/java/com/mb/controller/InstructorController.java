@@ -1,9 +1,8 @@
 package com.mb.controller;
 
 import com.mb.dto.request.InstructorRequest;
-import com.mb.dto.response.PaginatedResponse;
 import com.mb.dto.response.InstructorResponse;
-import com.mb.service.InstructorService;
+import com.mb.dto.response.PaginatedResponse;
 import com.mb.service.InstructorService;
 import com.mb.util.PaginationUtil;
 import jakarta.validation.Valid;

@@ -41,8 +41,8 @@ public class StudentService {
         );
         studentToUpdate.setName(request.name());
         studentToUpdate.setEmail(request.email());
-        Student savedStudent = studentRepository.save(studentToUpdate);
-        return toStudentResponse(savedStudent);
+        Student updatedStudent = studentRepository.save(studentToUpdate);
+        return toStudentResponse(updatedStudent);
     }
 
     @Transactional(readOnly = true)

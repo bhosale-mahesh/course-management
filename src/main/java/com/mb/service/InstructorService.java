@@ -43,4 +43,13 @@ public class InstructorService {
         return toInstructorResponse(instructorRepository.save(instructor));
     }
 
+    public InstructorResponse updateInstructor(Long id, InstructorRequest request) {
+        Instructor instructor = instructorRepository.findById(id).orElseThrow(
+                () -> new RuntimeException("Instructor with id " + id + " not found")
+        );
+        instructor.setName(request.name());
+        instructor.setEmail(request.email());
+        Instructor updatedInstructor = instructorRepository.save(instructor);
+        return toInstructorResponse(updatedInstructor);
+    }
 }
