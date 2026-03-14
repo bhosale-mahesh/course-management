@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +24,11 @@ public class InstructorService {
                 .name(instructor.getName())
                 .email(instructor.getEmail())
                 .build();
+    }
+
+    @Transactional(readOnly = true)
+    public Page<InstructorResponse> getAllInstructors(Pageable pageable) {
+        return instructorRepository.findAll(pageable).map(this::toInstructorResponse);
     }
 
     @Transactional
