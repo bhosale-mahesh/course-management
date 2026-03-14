@@ -10,6 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class StudentService {
@@ -34,14 +36,7 @@ public class StudentService {
         return toStudentResponse(savedStudent);
     }
 
-    private StudentResponse toStudentResponse(Student student) {
-        return StudentResponse.builder()
-                .id(student.getId())
-                .name(student.getName())
-                .email(student.getEmail())
-                .build();
-    }
-
+    @Transactional
     public StudentResponse updateStudent(Long id, StudentRequest request) {
         Student studentToUpdate = studentRepository.findById(id).orElseThrow(
                 () -> new RuntimeException("Student with id " + id + " not found")
@@ -50,5 +45,20 @@ public class StudentService {
         studentToUpdate.setEmail(request.email());
         Student savedStudent = studentRepository.save(studentToUpdate);
         return toStudentResponse(savedStudent);
+    }
+
+    @Transactional(readOnly = true)
+    public StudentResponse getStudentById(Long id) {
+        Student student = studentRepository.findById(id).orElseThrow(
+                () -> new RuntimeException("Student not found with id " + id));
+        return toStudentResponse(student);
+    }
+
+    private StudentResponse toStudentResponse(Student student) {
+        return StudentResponse.builder()
+                .id(student.getId())
+                .name(student.getName())
+                .email(student.getEmail())
+                .build();
     }
 }
