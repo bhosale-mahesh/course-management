@@ -4,10 +4,8 @@ import com.mb.dto.request.InstructorRequest;
 import com.mb.dto.response.InstructorResponse;
 import com.mb.model.Instructor;
 import com.mb.repository.InstructorRepository;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,13 +16,6 @@ public class InstructorService {
 
     private final InstructorRepository instructorRepository;
 
-    private InstructorResponse toInstructorResponse(Instructor instructor) {
-        return InstructorResponse.builder()
-                .id(instructor.getId())
-                .name(instructor.getName())
-                .email(instructor.getEmail())
-                .build();
-    }
 
     @Transactional(readOnly = true)
     public Page<InstructorResponse> getAllInstructors(Pageable pageable) {
@@ -43,6 +34,7 @@ public class InstructorService {
         return toInstructorResponse(instructorRepository.save(instructor));
     }
 
+    @Transactional
     public InstructorResponse updateInstructor(Long id, InstructorRequest request) {
         Instructor instructor = instructorRepository.findById(id).orElseThrow(
                 () -> new RuntimeException("Instructor with id " + id + " not found")
@@ -51,5 +43,26 @@ public class InstructorService {
         instructor.setEmail(request.email());
         Instructor updatedInstructor = instructorRepository.save(instructor);
         return toInstructorResponse(updatedInstructor);
+    }
+
+    @Transactional(readOnly = true)
+    public InstructorResponse getInstructorById(Long id) {
+        Instructor instructor = instructorRepository.findById(id).orElseThrow(
+                () -> new RuntimeException("Instructor with id " + id + " not found")
+        );
+        return toInstructorResponse(instructor);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<InstructorResponse> getInstructorsByName(String name, Pageable pageable) {
+        return instructorRepository.findByNameContainingIgnoreCase(name, pageable).map(this::toInstructorResponse);
+    }
+
+    private InstructorResponse toInstructorResponse(Instructor instructor) {
+        return InstructorResponse.builder()
+                .id(instructor.getId())
+                .name(instructor.getName())
+                .email(instructor.getEmail())
+                .build();
     }
 }
