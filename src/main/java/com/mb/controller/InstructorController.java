@@ -30,7 +30,9 @@ public class InstructorController {
     @GetMapping
     public PaginatedResponse<InstructorResponse> getAllInstructors(@RequestParam(defaultValue = "0") int page,
                                                                    @RequestParam(defaultValue = PaginationUtil.DEFAULT_PAGE_SIZE) int size) {
-        return PaginationUtil.buildPaginatedResponse(instructorService.getAllInstructors(PageRequest.of(page, size, Sort.by("id"))));
+        return PaginationUtil.buildPaginatedResponse(
+                instructorService.getAllInstructors(PageRequest.of(page, size, Sort.by("id")))
+        );
     }
 
     @PostMapping
@@ -53,6 +55,8 @@ public class InstructorController {
     public PaginatedResponse<InstructorResponse> getInstructorsByName(@RequestParam("name") String name,
                                                                       @RequestParam(defaultValue = "0") int page,
                                                                       @RequestParam(defaultValue = PaginationUtil.DEFAULT_PAGE_SIZE) int size) {
-        return PaginationUtil.buildPaginatedResponse(instructorService.getInstructorsByName(name, PageRequest.of(page, size, Sort.by("id"))));
+        return PaginationUtil.buildPaginatedResponse(
+                instructorService.getInstructorsByName(name, PageRequest.of(page, size, Sort.by("id")))
+        );
     }
 }

@@ -30,7 +30,9 @@ public class StudentController {
     @GetMapping
     public PaginatedResponse<StudentResponse> getAllStudents(@RequestParam(defaultValue = "0") int page,
                                                              @RequestParam(defaultValue = PaginationUtil.DEFAULT_PAGE_SIZE) int size) {
-        return PaginationUtil.buildPaginatedResponse(studentService.getAllStudents(PageRequest.of(page, size, Sort.by("id"))));
+        return PaginationUtil.buildPaginatedResponse(
+                studentService.getAllStudents(PageRequest.of(page, size, Sort.by("id")))
+        );
     }
 
     @PostMapping
@@ -53,6 +55,8 @@ public class StudentController {
     public PaginatedResponse<StudentResponse> getStudentsByName(@RequestParam("name") String name,
                                                                 @RequestParam(defaultValue = "0") int page,
                                                                 @RequestParam(defaultValue = PaginationUtil.DEFAULT_PAGE_SIZE) int size) {
-        return PaginationUtil.buildPaginatedResponse(studentService.getStudentsByName(name, PageRequest.of(page, size, Sort.by("id"))));
+        return PaginationUtil.buildPaginatedResponse(
+                studentService.getStudentsByName(name, PageRequest.of(page, size, Sort.by("id")))
+        );
     }
 }
