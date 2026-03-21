@@ -83,4 +83,13 @@ public class CourseService {
     public Page<CourseResponse> searchByPrice(BigDecimal maxPrice, Pageable pageable) {
         return courseRepository.findByPriceLessThanEqual(maxPrice, pageable).map(this::toCourseResponse);
     }
+
+    @Transactional
+    public void deleteCourse(Long id) {
+        Course course = getCourseOrThrow(id);
+        if (!course.getStudents().isEmpty()) {
+            throw new RuntimeException("Cannot delete: Students still enrolled for this course");
+        }
+        courseRepository.delete(course);
+    }
 }
