@@ -36,9 +36,7 @@ public class CourseService {
 
     @Transactional
     public CourseResponse createCourse(CourseRequest courseRequest) {
-        Instructor instructor = instructorRepository.findById(courseRequest.instructorId()).orElseThrow(
-                () -> new RuntimeException("Instructor with id " + courseRequest.instructorId() + " not found")
-        );
+        Instructor instructor = getInstructorOrThrow(courseRequest.instructorId());
         Course course = Course.builder()
                 .title(courseRequest.title())
                 .description(courseRequest.description())
@@ -47,5 +45,33 @@ public class CourseService {
                 .build();
         Course savedCourse = courseRepository.save(course);
         return toCourseResponse(savedCourse);
+    }
+
+    private Instructor getInstructorOrThrow(Long id) {
+        return instructorRepository.findById(id).orElseThrow(
+                () -> new RuntimeException("Instructor with id " + id + " not found")
+        );
+    }
+
+    public CourseResponse getCourseById(Long id) {
+        Course course = getCourseOrThrow(id);
+        return toCourseResponse(course);
+    }
+
+    private Course getCourseOrThrow(Long id) {
+        return courseRepository.findById(id).orElseThrow(
+                () -> new RuntimeException("Course with id: " + id + " not found")
+        );
+    }
+
+    public CourseResponse updateCourse(Long id, CourseRequest courseRequest) {
+        Course course = getCourseOrThrow(id);
+        Instructor instructor = getInstructorOrThrow(courseRequest.instructorId());
+        course.setTitle(courseRequest.title());
+        course.setDescription(courseRequest.description());
+        course.setInstructor(instructor);
+        course.setPrice(courseRequest.price());
+        Course updatedCourse = courseRepository.save(course);
+        return toCourseResponse(updatedCourse);
     }
 }
