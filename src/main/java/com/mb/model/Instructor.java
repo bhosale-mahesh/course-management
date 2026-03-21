@@ -37,4 +37,21 @@ public class Instructor {
 
     @OneToMany(mappedBy = "instructor")
     private List<Course> courses;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || (this.getClass() != o.getClass())) {
+            return false;
+        }
+        Instructor other = (Instructor) o;
+        return id != null && id.equals(other.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

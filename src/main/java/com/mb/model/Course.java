@@ -57,4 +57,22 @@ public class Course {
 
     @ManyToMany(mappedBy = "courses")
     private Set<Student> students = new HashSet<>();
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || (this.getClass() != o.getClass())) {
+            return false;
+        }
+        Course other = (Course) o;
+        return id != null && id.equals(other.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }
