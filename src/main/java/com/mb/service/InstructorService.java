@@ -36,9 +36,7 @@ public class InstructorService {
 
     @Transactional
     public InstructorResponse updateInstructor(Long id, InstructorRequest request) {
-        Instructor instructor = instructorRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Instructor with id " + id + " not found")
-        );
+        Instructor instructor = getInstructorOrThrow(id);
         instructor.setName(request.name());
         instructor.setEmail(request.email());
         Instructor updatedInstructor = instructorRepository.save(instructor);
@@ -47,10 +45,14 @@ public class InstructorService {
 
     @Transactional(readOnly = true)
     public InstructorResponse getInstructorById(Long id) {
-        Instructor instructor = instructorRepository.findById(id).orElseThrow(
+        Instructor instructor = getInstructorOrThrow(id);
+        return toInstructorResponse(instructor);
+    }
+
+    private Instructor getInstructorOrThrow(Long id) {
+        return instructorRepository.findById(id).orElseThrow(
                 () -> new RuntimeException("Instructor with id " + id + " not found")
         );
-        return toInstructorResponse(instructor);
     }
 
     @Transactional(readOnly = true)

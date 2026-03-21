@@ -36,9 +36,7 @@ public class StudentService {
 
     @Transactional
     public StudentResponse updateStudent(Long id, StudentRequest request) {
-        Student studentToUpdate = studentRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Student with id " + id + " not found")
-        );
+        Student studentToUpdate = getStudentOrThrow(id);
         studentToUpdate.setName(request.name());
         studentToUpdate.setEmail(request.email());
         Student updatedStudent = studentRepository.save(studentToUpdate);
@@ -47,9 +45,14 @@ public class StudentService {
 
     @Transactional(readOnly = true)
     public StudentResponse getStudentById(Long id) {
-        Student student = studentRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Student not found with id " + id));
+        Student student = getStudentOrThrow(id);
         return toStudentResponse(student);
+    }
+
+    private Student getStudentOrThrow(Long id) {
+        return studentRepository.findById(id).orElseThrow(
+                () -> new RuntimeException("Student not found with id " + id)
+        );
     }
 
     @Transactional(readOnly = true)
