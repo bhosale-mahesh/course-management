@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
+
 @RestController
 @RequestMapping("/v1/api/courses")
 @RequiredArgsConstructor
@@ -49,5 +51,14 @@ public class CourseController {
     @PutMapping("/{id}")
     public CourseResponse updateCourse(@PathVariable("id") Long id, @Valid @RequestBody CourseRequest courseRequest) {
         return courseService.updateCourse(id, courseRequest);
+    }
+
+    @GetMapping("/search")
+    public PaginatedResponse<CourseResponse> searchByPrice(@RequestParam("maxPrice") BigDecimal maxPrice,
+                                                           @RequestParam(defaultValue = "0") int page,
+                                                           @RequestParam(defaultValue = PaginationUtil.DEFAULT_PAGE_SIZE) int size) {
+        return PaginationUtil.buildPaginatedResponse(
+                courseService.searchByPrice(maxPrice, PageRequest.of(page, size, Sort.by("id")))
+        );
     }
 }

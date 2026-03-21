@@ -12,6 +12,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+
 @Service
 @RequiredArgsConstructor
 public class CourseService {
@@ -53,6 +55,7 @@ public class CourseService {
         );
     }
 
+    @Transactional(readOnly = true)
     public CourseResponse getCourseById(Long id) {
         Course course = getCourseOrThrow(id);
         return toCourseResponse(course);
@@ -64,6 +67,7 @@ public class CourseService {
         );
     }
 
+    @Transactional
     public CourseResponse updateCourse(Long id, CourseRequest courseRequest) {
         Course course = getCourseOrThrow(id);
         Instructor instructor = getInstructorOrThrow(courseRequest.instructorId());
@@ -73,5 +77,10 @@ public class CourseService {
         course.setPrice(courseRequest.price());
         Course updatedCourse = courseRepository.save(course);
         return toCourseResponse(updatedCourse);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<CourseResponse> searchByPrice(BigDecimal maxPrice, Pageable pageable) {
+        return courseRepository.findByPriceLessThanEqual(maxPrice, pageable).map(this::toCourseResponse);
     }
 }
