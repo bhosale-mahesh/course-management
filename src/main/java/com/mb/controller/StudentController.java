@@ -42,7 +42,8 @@ public class StudentController {
     }
 
     @PutMapping("/{id}")
-    public StudentResponse updateStudent(@PathVariable("id") Long id, @Valid @RequestBody StudentRequest request) {
+    public StudentResponse updateStudent(@PathVariable("id") Long id,
+                                         @Valid @RequestBody StudentRequest request) {
         return studentService.updateStudent(id, request);
     }
 
@@ -58,5 +59,12 @@ public class StudentController {
         return PaginationUtil.buildPaginatedResponse(
                 studentService.getStudentsByName(name, PageRequest.of(page, size, Sort.by("id")))
         );
+    }
+
+    @PostMapping("/{studentId}/enroll/{courseId}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void enrollStudent(@PathVariable("studentId") Long studentId,
+                              @PathVariable("courseId") Long courseId) {
+        studentService.enrollStudent(studentId, courseId);
     }
 }

@@ -5,7 +5,6 @@ import com.mb.dto.response.CourseResponse;
 import com.mb.model.Course;
 import com.mb.model.Instructor;
 import com.mb.repository.CourseRepository;
-import com.mb.repository.InstructorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,7 +18,7 @@ import java.math.BigDecimal;
 public class CourseService {
 
     private final CourseRepository courseRepository;
-    private final InstructorRepository instructorRepository;
+    private final InstructorService instructorService;
 
     private CourseResponse toCourseResponse(Course course) {
         return CourseResponse.builder()
@@ -38,7 +37,7 @@ public class CourseService {
 
     @Transactional
     public CourseResponse createCourse(CourseRequest courseRequest) {
-        Instructor instructor = getInstructorOrThrow(courseRequest.instructorId());
+        Instructor instructor = instructorService.getInstructorOrThrow(courseRequest.instructorId());
         Course course = Course.builder()
                 .title(courseRequest.title())
                 .description(courseRequest.description())
@@ -49,19 +48,13 @@ public class CourseService {
         return toCourseResponse(savedCourse);
     }
 
-    private Instructor getInstructorOrThrow(Long id) {
-        return instructorRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Instructor with id " + id + " not found")
-        );
-    }
-
-    @Transactional(readOnly = true)
     public CourseResponse getCourseById(Long id) {
         Course course = getCourseOrThrow(id);
         return toCourseResponse(course);
     }
 
-    private Course getCourseOrThrow(Long id) {
+    @Transactional(readOnly = true)
+    public Course getCourseOrThrow(Long id) {
         return courseRepository.findById(id).orElseThrow(
                 () -> new RuntimeException("Course with id: " + id + " not found")
         );
@@ -70,7 +63,7 @@ public class CourseService {
     @Transactional
     public CourseResponse updateCourse(Long id, CourseRequest courseRequest) {
         Course course = getCourseOrThrow(id);
-        Instructor instructor = getInstructorOrThrow(courseRequest.instructorId());
+        Instructor instructor = instructorService.getInstructorOrThrow(courseRequest.instructorId());
         course.setTitle(courseRequest.title());
         course.setDescription(courseRequest.description());
         course.setInstructor(instructor);

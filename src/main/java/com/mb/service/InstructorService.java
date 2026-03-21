@@ -43,13 +43,13 @@ public class InstructorService {
         return toInstructorResponse(updatedInstructor);
     }
 
-    @Transactional(readOnly = true)
     public InstructorResponse getInstructorById(Long id) {
         Instructor instructor = getInstructorOrThrow(id);
         return toInstructorResponse(instructor);
     }
 
-    private Instructor getInstructorOrThrow(Long id) {
+    @Transactional(readOnly = true)
+    public Instructor getInstructorOrThrow(Long id) {
         return instructorRepository.findById(id).orElseThrow(
                 () -> new RuntimeException("Instructor with id " + id + " not found")
         );

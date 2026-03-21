@@ -2,6 +2,7 @@ package com.mb.service;
 
 import com.mb.dto.request.StudentRequest;
 import com.mb.dto.response.StudentResponse;
+import com.mb.model.Course;
 import com.mb.model.Student;
 import com.mb.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,15 @@ import org.springframework.transaction.annotation.Transactional;
 public class StudentService {
 
     private final StudentRepository studentRepository;
+    private final CourseService courseService;
+
+    private StudentResponse toStudentResponse(Student student) {
+        return StudentResponse.builder()
+                .id(student.getId())
+                .name(student.getName())
+                .email(student.getEmail())
+                .build();
+    }
 
     @Transactional(readOnly = true)
     public Page<StudentResponse> getAllStudents(Pageable pageable) {
@@ -60,11 +70,14 @@ public class StudentService {
         return studentRepository.findByNameContainingIgnoreCase(name, pageable).map(this::toStudentResponse);
     }
 
-    private StudentResponse toStudentResponse(Student student) {
-        return StudentResponse.builder()
-                .id(student.getId())
-                .name(student.getName())
-                .email(student.getEmail())
-                .build();
+    @Transactional
+    public void enrollStudent(Long studentId, Long courseId) {
+        Student student = getStudentOrThrow(studentId);
+        Course course = courseService.getCourseOrThrow(courseId);
+        if (student.getCourses().contains(course)) {
+            throw new RuntimeException("Student with id " + studentId + " already enrolled in course");
+        }
+        student.getCourses().add(course);
+        studentRepository.save(student);
     }
 }
