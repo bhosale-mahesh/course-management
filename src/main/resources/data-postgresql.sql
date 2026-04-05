@@ -19,6 +19,22 @@ VALUES (1, 'Harry Potter', 'harry@hogwarts.edu.in'),
        (4, 'Neville Longbottom', 'neville@hogwarts.edu.in'),
        (5, 'Draco Malfoy', 'draco@hogwarts.edu.in');
 
+INSERT INTO student_course(student_id, course_id)
+VALUES (1, 3),
+       (1, 4),
+       (1, 5),
+       (2, 1),
+       (2, 2),
+       (2, 3),
+       (2, 4),
+       (2, 5),
+       (3, 3),
+       (3, 4),
+       (3, 5),
+       (4, 2),
+       (4, 5),
+       (5, 1);
+
 SELECT setval('instructor_id_seq', (SELECT MAX(id) FROM instructor));
 SELECT setval('course_id_seq', (SELECT MAX(id) FROM course));
 SELECT setval('student_id_seq', (SELECT MAX(id) FROM student));

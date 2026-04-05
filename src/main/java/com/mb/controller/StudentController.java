@@ -72,7 +72,7 @@ public class StudentController {
         studentService.enrollStudent(studentId, courseId);
     }
 
-    @DeleteMapping("/{studentId}/dropout/{courseId}")
+    @DeleteMapping("/{studentId}/course/{courseId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void dropOutOfCourse(@PathVariable("studentId") Long studentId,
                               @PathVariable("courseId") Long courseId) {
