@@ -1,6 +1,7 @@
 package com.mb.controller;
 
 import com.mb.dto.request.StudentRequest;
+import com.mb.dto.response.CourseResponse;
 import com.mb.dto.response.PaginatedResponse;
 import com.mb.dto.response.StudentResponse;
 import com.mb.service.StudentService;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/v1/api/students")
@@ -66,5 +70,17 @@ public class StudentController {
     public void enrollStudent(@PathVariable("studentId") Long studentId,
                               @PathVariable("courseId") Long courseId) {
         studentService.enrollStudent(studentId, courseId);
+    }
+
+    @DeleteMapping("/{studentId}/dropout/{courseId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void dropOutOfCourse(@PathVariable("studentId") Long studentId,
+                              @PathVariable("courseId") Long courseId) {
+        studentService.dropOutOfCourse(studentId, courseId);
+    }
+
+    @GetMapping("/{studentId}/courses")
+    public List<CourseResponse> getEnrolledCourses(@PathVariable("studentId") Long studentId) {
+        return studentService.getEnrolledCourses(studentId);
     }
 }
