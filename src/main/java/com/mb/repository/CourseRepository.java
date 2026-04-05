@@ -1,5 +1,6 @@
 package com.mb.repository;
 
+import com.mb.dto.response.CourseStudentCountProjection;
 import com.mb.dto.response.CourseStudentCountResponse;
 import com.mb.model.Course;
 import org.springframework.data.domain.Page;
@@ -14,10 +15,21 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
 
     Page<Course> findByPriceLessThanEqual(BigDecimal maxPrice, Pageable pageable);
 
+    /*
     @Query(value = """
-                    select c.id as courseId, c.title as courseTitle, count(s.id) as studentCount from course c
-                    left join student_course sc on c.id = sc.course_id inner join student s on sc.student_id = s.id
-                    group by c.id order by c.id
+                    select c.id as courseId, c.title as courseTitle, count(sc.student_id) as studentCount
+                    from course c left join student_course sc on c.id = sc.course_id
+                    group by c.id
+                    order by c.id
             """, nativeQuery = true)
-    List<CourseStudentCountResponse> getStudentsPerCourse();
+    List<CourseStudentCountResponse> getStudentsPerCourse(); // Use native query
+    */
+
+    @Query(value = """
+                 select c.id as courseId, c.title as courseTitle, count(s) as studentCount
+                 from Course c left join c.students s
+                 group by c.id
+                 order by c.id
+            """)
+    List<CourseStudentCountProjection> getStudentsPerCourse();
 }

@@ -14,6 +14,14 @@ public class ReportService {
     private final CourseRepository courseRepository;
 
     public List<CourseStudentCountResponse> getStudentCountPerCourse() {
-        return courseRepository.getStudentsPerCourse();
+        return courseRepository.getStudentsPerCourse().stream()
+                .map(proj ->
+                        CourseStudentCountResponse.builder()
+                                .courseId(proj.getCourseId())
+                                .courseTitle(proj.getCourseTitle())
+                                .studentCount(proj.getStudentCount())
+                                .build()
+                )
+                .toList();
     }
 }
