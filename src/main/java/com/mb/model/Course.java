@@ -44,6 +44,7 @@ public class Course {
     @Column(name = "price", nullable = false)
     private BigDecimal price;
 
+    @Builder.Default
     @Column(name = "is_active")
     private boolean isActive = true;
 
@@ -55,6 +56,7 @@ public class Course {
     )
     private Instructor instructor;
 
+    @Builder.Default
     @ManyToMany(mappedBy = "courses")
     private Set<Student> students = new HashSet<>();
 
