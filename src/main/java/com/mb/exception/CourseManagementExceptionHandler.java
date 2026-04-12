@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -12,6 +13,11 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class CourseManagementExceptionHandler {
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Map<String, Object>> handleException(Exception exception) {
+        return buildExceptionResponse(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> handleInvalidArguments(MethodArgumentNotValidException exception) {
@@ -23,8 +29,8 @@ public class CourseManagementExceptionHandler {
         return buildExceptionResponse(HttpStatus.BAD_REQUEST, exception.getMessage());
     }
 
-    @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<Map<String, Object>> handleResourceNotFoundException(ResourceNotFoundException exception) {
+    @ExceptionHandler({ResourceNotFoundException.class, NoResourceFoundException.class})
+    public ResponseEntity<Map<String, Object>> handleResourceNotFoundException(Exception exception) {
         return buildExceptionResponse(HttpStatus.NOT_FOUND, exception.getMessage());
     }
 
