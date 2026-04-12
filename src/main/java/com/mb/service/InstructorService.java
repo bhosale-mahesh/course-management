@@ -3,6 +3,7 @@ package com.mb.service;
 import com.mb.dto.request.InstructorRequest;
 import com.mb.dto.response.InstructorResponse;
 import com.mb.exception.DuplicateResourceException;
+import com.mb.exception.ResourceNotFoundException;
 import com.mb.model.Instructor;
 import com.mb.repository.InstructorRepository;
 import lombok.RequiredArgsConstructor;
@@ -52,7 +53,7 @@ public class InstructorService {
     @Transactional(readOnly = true)
     public Instructor getInstructorOrThrow(Long id) {
         return instructorRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Instructor with id " + id + " not found")
+                () -> new ResourceNotFoundException("Instructor with id " + id + " not found")
         );
     }
 

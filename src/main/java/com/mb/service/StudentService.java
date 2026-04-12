@@ -66,7 +66,7 @@ public class StudentService {
 
     private Student getStudentOrThrow(Long id) {
         return studentRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Student not found with id " + id)
+                () -> new ResourceNotFoundException("Student not found with id " + id)
         );
     }
 
