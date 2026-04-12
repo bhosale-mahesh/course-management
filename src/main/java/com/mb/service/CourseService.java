@@ -2,6 +2,8 @@ package com.mb.service;
 
 import com.mb.dto.request.CourseRequest;
 import com.mb.dto.response.CourseResponse;
+import com.mb.exception.CourseManagementException;
+import com.mb.exception.ResourceNotFoundException;
 import com.mb.model.Course;
 import com.mb.model.Instructor;
 import com.mb.repository.CourseRepository;
@@ -56,7 +58,7 @@ public class CourseService {
     @Transactional(readOnly = true)
     public Course getCourseOrThrow(Long id) {
         return courseRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Course with id: " + id + " not found")
+                () -> new ResourceNotFoundException("Course with id: " + id + " not found")
         );
     }
 
@@ -81,7 +83,7 @@ public class CourseService {
     public void deleteCourse(Long id) {
         Course course = getCourseOrThrow(id);
         if (!course.getStudents().isEmpty()) {
-            throw new RuntimeException("Cannot delete: Students still enrolled for this course");
+            throw new CourseManagementException("Cannot delete: Students still enrolled for this course");
         }
         courseRepository.delete(course);
     }

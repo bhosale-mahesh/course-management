@@ -1,6 +1,7 @@
 package com.mb.service;
 
 import com.mb.dto.response.CourseStudentCountResponse;
+import com.mb.exception.CourseManagementException;
 import com.mb.repository.CourseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,7 +32,7 @@ public class ReportService {
     public CourseStudentCountResponse getStudentCountForCourse(long courseId) {
         CourseStudentCountResponse studentCountForCourse = courseRepository.getStudentCountForCourse(courseId);
         if (studentCountForCourse == null) {
-            throw new RuntimeException("No student found, make sure course exist");
+            throw new CourseManagementException("No student found, make sure course exist");
         }
         return studentCountForCourse;
     }

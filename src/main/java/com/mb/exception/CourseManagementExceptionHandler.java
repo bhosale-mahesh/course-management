@@ -24,8 +24,13 @@ public class CourseManagementExceptionHandler {
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<Map<String, Object>> resourceNotFound(ResourceNotFoundException exception) {
+    public ResponseEntity<Map<String, Object>> handleResourceNotFoundException(ResourceNotFoundException exception) {
         return buildExceptionResponse(HttpStatus.NOT_FOUND, exception.getMessage());
+    }
+
+    @ExceptionHandler(DuplicateResourceException.class)
+    public ResponseEntity<Map<String, Object>> handleDuplicateResourceException(DuplicateResourceException exception) {
+        return buildExceptionResponse(HttpStatus.CONFLICT, exception.getMessage());
     }
 
     private ResponseEntity<Map<String, Object>> buildExceptionResponse(HttpStatus httpStatus, String errorMessage) {

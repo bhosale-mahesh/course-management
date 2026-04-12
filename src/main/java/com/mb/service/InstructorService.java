@@ -2,6 +2,7 @@ package com.mb.service;
 
 import com.mb.dto.request.InstructorRequest;
 import com.mb.dto.response.InstructorResponse;
+import com.mb.exception.DuplicateResourceException;
 import com.mb.model.Instructor;
 import com.mb.repository.InstructorRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,7 @@ public class InstructorService {
     @Transactional
     public InstructorResponse saveInstructor(InstructorRequest request) {
         if (instructorRepository.existsByEmail(request.email())) {
-            throw new RuntimeException("Email: " + request.email() + " already exists");
+            throw new DuplicateResourceException("Email: " + request.email() + " already exists");
         }
         Instructor instructor = Instructor.builder()
                 .name(request.name())

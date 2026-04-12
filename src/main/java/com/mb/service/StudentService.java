@@ -3,6 +3,8 @@ package com.mb.service;
 import com.mb.dto.request.StudentRequest;
 import com.mb.dto.response.CourseResponse;
 import com.mb.dto.response.StudentResponse;
+import com.mb.exception.DuplicateResourceException;
+import com.mb.exception.ResourceNotFoundException;
 import com.mb.model.Course;
 import com.mb.model.Student;
 import com.mb.repository.StudentRepository;
@@ -37,7 +39,7 @@ public class StudentService {
     @Transactional
     public StudentResponse saveStudent(StudentRequest request) {
         if (studentRepository.existsByEmail(request.email())) {
-            throw new RuntimeException("Email: " + request.email() + " already exist");
+            throw new DuplicateResourceException("Email: " + request.email() + " already exist");
         }
         Student newStudent = Student.builder()
                 .name(request.name())
@@ -78,7 +80,7 @@ public class StudentService {
         Student student = getStudentOrThrow(studentId);
         Course course = courseService.getCourseOrThrow(courseId);
         if (student.getCourses().contains(course)) {
-            throw new RuntimeException("Student with id " + studentId + " is already enrolled in course");
+            throw new DuplicateResourceException("Student with id " + studentId + " is already enrolled in course");
         }
         student.getCourses().add(course);
         studentRepository.save(student);
@@ -89,7 +91,7 @@ public class StudentService {
         Student student = getStudentOrThrow(studentId);
         Course course = courseService.getCourseOrThrow(courseId);
         if (!student.getCourses().contains(course)) {
-            throw new RuntimeException("Student with id " + studentId + " is not enrolled in course");
+            throw new ResourceNotFoundException("Student with id " + studentId + " is not enrolled in course");
         }
         student.getCourses().remove(course);
         studentRepository.save(student);
