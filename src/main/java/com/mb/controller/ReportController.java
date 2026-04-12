@@ -4,6 +4,7 @@ import com.mb.dto.response.CourseStudentCountResponse;
 import com.mb.service.ReportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,5 +20,10 @@ public class ReportController {
     @GetMapping("/courses/student-count")
     public List<CourseStudentCountResponse> getStudentCountPerCourse() {
         return reportService.getStudentCountPerCourse();
+    }
+
+    @GetMapping("/course/{courseId}/student-count")
+    public CourseStudentCountResponse getStudentCountForCourse(@PathVariable("courseId") long courseId) {
+        return reportService.getStudentCountForCourse(courseId);
     }
 }

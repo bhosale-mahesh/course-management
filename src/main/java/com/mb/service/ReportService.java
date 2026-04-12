@@ -4,6 +4,7 @@ import com.mb.dto.response.CourseStudentCountResponse;
 import com.mb.repository.CourseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -13,6 +14,7 @@ public class ReportService {
 
     private final CourseRepository courseRepository;
 
+    @Transactional(readOnly = true)
     public List<CourseStudentCountResponse> getStudentCountPerCourse() {
         return courseRepository.getStudentsPerCourse().stream()
                 .map(proj ->
@@ -23,5 +25,14 @@ public class ReportService {
                                 .build()
                 )
                 .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public CourseStudentCountResponse getStudentCountForCourse(long courseId) {
+        CourseStudentCountResponse studentCountForCourse = courseRepository.getStudentCountForCourse(courseId);
+        if (studentCountForCourse == null) {
+            throw new RuntimeException("No student found, make sure course exist");
+        }
+        return studentCountForCourse;
     }
 }

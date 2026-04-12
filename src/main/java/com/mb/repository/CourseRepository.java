@@ -6,6 +6,7 @@ import com.mb.model.Course;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.NativeQuery;
 import org.springframework.data.jpa.repository.Query;
 
 import java.math.BigDecimal;
@@ -26,10 +27,18 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
     */
 
     @Query(value = """
-                 select c.id as courseId, c.title as courseTitle, count(s) as studentCount
-                 from Course c left join c.students s
-                 group by c.id
-                 order by c.id
+            select c.id as courseId, c.title as courseTitle, count(s) as studentCount
+            from Course c left join c.students s
+            group by c.id
+            order by c.id
             """)
     List<CourseStudentCountProjection> getStudentsPerCourse();
+
+    @NativeQuery(value = """
+            select c.id as courseId, c.title as courseTitle, count(sc.student_id) as studentCount
+            from course c left join student_course sc on c.id = sc.course_id
+            where c.id = :courseId
+            group by c.id
+            """)
+    CourseStudentCountResponse getStudentCountForCourse(long courseId);
 }
