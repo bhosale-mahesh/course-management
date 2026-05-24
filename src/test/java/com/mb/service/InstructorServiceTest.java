@@ -1,5 +1,6 @@
 package com.mb.service;
 
+import com.mb.dto.request.InstructorRequest;
 import com.mb.dto.response.InstructorResponse;
 import com.mb.model.Course;
 import com.mb.model.Instructor;
@@ -15,10 +16,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -54,6 +59,26 @@ class InstructorServiceTest {
         );
     }
 
+    private void mockInstructorById() {
+        Instructor instructor = Instructor.builder()
+                .id(1L)
+                .name("Minerva McGonagall")
+                .email("mcgonagall@hogwarts.edu.in")
+                .courses(List.of(Course.builder()
+                        .id(1L)
+                        .title("Transfiguration Mastery")
+                        .description("Learn advanced transformation spells")
+                        .build()))
+                .build();
+        when(instructorRepository.findById(anyLong()))
+                .thenReturn(Optional.ofNullable(instructor));
+    }
+
+    private void mockSaveInstructor(Instructor instructor) {
+        when(instructorRepository.save(any(Instructor.class)))
+                .thenReturn(instructor);
+    }
+
     @Test
     void getAllInstructors() {
         when(instructorRepository.findAll(any(Pageable.class)))
@@ -67,10 +92,35 @@ class InstructorServiceTest {
 
     @Test
     void saveInstructor() {
+        when(instructorRepository.existsByEmail(anyString()))
+                .thenReturn(false);
+        mockSaveInstructor(getInstructorsList().getFirst());
+
+        InstructorResponse instructor = instructorService.saveInstructor(new InstructorRequest(
+                "Severus Snape",
+                "snape@hogwarts.edu.in"
+        ));
+
+        assertNotNull(instructor);
     }
 
     @Test
     void updateInstructor() {
+        mockInstructorById();
+        Instructor instructor = Instructor.builder()
+                .id(1L)
+                .name("test-instructor")
+                .email("test@hogwarts.edu.in")
+                .courses(List.of(Course.builder()
+                        .id(1L)
+                        .title("test")
+                        .build()))
+                .build();
+        mockSaveInstructor(instructor);
+
+        InstructorResponse updatedInstructor = instructorService.updateInstructor(1L, new InstructorRequest("test-instructor", "test@hogwarts.edu.in"));
+        assertNotNull(updatedInstructor);
+        assertEquals("test-instructor", updatedInstructor.name());
     }
 
     @Test
