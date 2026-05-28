@@ -2,6 +2,8 @@ package com.mb.service;
 
 import com.mb.dto.request.InstructorRequest;
 import com.mb.dto.response.InstructorResponse;
+import com.mb.exception.DuplicateResourceException;
+import com.mb.exception.ResourceNotFoundException;
 import com.mb.model.Course;
 import com.mb.model.Instructor;
 import com.mb.repository.InstructorRepository;
@@ -21,6 +23,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -60,7 +63,13 @@ class InstructorServiceTest {
     }
 
     private void mockInstructorById() {
-        Instructor instructor = Instructor.builder()
+        Instructor instructor = getInstructor();
+        when(instructorRepository.findById(anyLong()))
+                .thenReturn(Optional.ofNullable(instructor));
+    }
+
+    private static Instructor getInstructor() {
+        return Instructor.builder()
                 .id(1L)
                 .name("Minerva McGonagall")
                 .email("mcgonagall@hogwarts.edu.in")
@@ -70,8 +79,6 @@ class InstructorServiceTest {
                         .description("Learn advanced transformation spells")
                         .build()))
                 .build();
-        when(instructorRepository.findById(anyLong()))
-                .thenReturn(Optional.ofNullable(instructor));
     }
 
     private void mockSaveInstructor(Instructor instructor) {
@@ -105,6 +112,17 @@ class InstructorServiceTest {
     }
 
     @Test
+    void saveInstructorException() {
+        when(instructorRepository.existsByEmail(anyString()))
+                .thenReturn(true);
+
+        assertThrows(DuplicateResourceException.class, () -> instructorService.saveInstructor(new InstructorRequest(
+                "Severus Snape",
+                "snape@hogwarts.edu.in"
+        )));
+    }
+
+    @Test
     void updateInstructor() {
         mockInstructorById();
         Instructor instructor = Instructor.builder()
@@ -125,13 +143,25 @@ class InstructorServiceTest {
 
     @Test
     void getInstructorById() {
+        mockInstructorById();
+
+        InstructorResponse instructor = instructorService.getInstructorById(1L);
+
+        assertNotNull(instructor);
     }
 
     @Test
     void getInstructorOrThrow() {
+        assertThrows(ResourceNotFoundException.class, () -> instructorService.getInstructorOrThrow(1L));
     }
 
     @Test
     void getInstructorsByName() {
+        when(instructorRepository.findByNameContainingIgnoreCase(anyString(), any(Pageable.class)))
+                .thenReturn(getInstructors());
+
+        Page<InstructorResponse> instructors = instructorService.getInstructorsByName("Minerva", Pageable.ofSize(1));
+
+        assertNotNull(instructors);
     }
 }
